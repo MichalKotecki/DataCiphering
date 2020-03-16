@@ -1,0 +1,2 @@
+In Python there are no operators like: !, &&, ||. Syntax is different. There are: not, and, or.
+In C# you can replace 'return' keyword with '=>'. Example: public double Power() => 1000;
