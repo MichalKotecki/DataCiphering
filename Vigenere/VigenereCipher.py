@@ -98,6 +98,8 @@ def prepareKeyword(keyword, text):
     readyKeyword = cutStringToMatchLenght(len(inputText), extendedKeywordByCharsFromOutsideAlphabet)
     return readyKeyword
 
+
+
 if __name__ == '__main__':
 
     inputFilePath = 'D:\Projekty\DataSecurity\DataCiphering\Vigenere\inputVigenere.txt'
