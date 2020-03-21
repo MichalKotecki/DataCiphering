@@ -14,11 +14,14 @@ import numpy as np
 
 # Side note:  in polish you read the name Vigenere as 'wiżyniir'
 
+# Default InputText is Stephen King's novel titled 'A Death'. It has over 25 000 characters.
+# The random keyword for this novel is: '9dd41zk0ne'. It has exactly 10 characters.
+
 def listOfNums():
     numList = list(map(str, list(range(0, 10))))
     return numList
 
-alphabet = listOfNums() + list(string.ascii_lowercase)
+alphabet = listOfNums() + list(string.ascii_uppercase)
 
 def moveAlphabet(text):
     alphabetMoved = text[1:] + [text[0]]
@@ -103,24 +106,24 @@ def prepareKeyword(keyword, text):
 if __name__ == '__main__':
 
     inputFilePath = 'D:\Projekty\DataSecurity\DataCiphering\Vigenere\inputVigenere.txt'
-    inputText = readFileToString(inputFilePath).lower()
-    print(inputText)
+    inputText = readFileToString(inputFilePath).upper()
+    # print(inputText)
 
     cipheredFilePath = 'D:\Projekty\DataSecurity\DataCiphering\Vigenere\cipheredVigenere.txt'
-    cipheredText = readFileToString(cipheredFilePath).lower()
-    print(cipheredText)
+    cipheredText = readFileToString(cipheredFilePath).upper()
+    # print(cipheredText)
 
     decipheredFilePath = 'D:\Projekty\DataSecurity\DataCiphering\Vigenere\decipheredVigenere.txt'
 
-    print('Encryption Table: ')
-    print(EncryptionTable, '\n', '\n')
+    # print('Encryption Table: ')
+    # print(EncryptionTable, '\n', '\n')
 
 #   #   #   #   #   #   #   #
 
     print('Enter Keyword: ')
-    keyword = input().lower()
+    keyword = input().upper()
     keyword = prepareKeyword(keyword, inputText)
-    print(keyword)
+    # print(keyword)
 
     while(1):
         print('Vigenère Cipher')
@@ -130,11 +133,11 @@ if __name__ == '__main__':
         if cipheringAction == 'C' or cipheringAction == 'c':
             cipheredText = CipherVigenere(keyword, inputText)
             writeStringToFile(cipheredFilePath, cipheredText)
-            print(cipheredText)
+            # print(cipheredText)
             break
         if cipheringAction == 'D' or cipheringAction == 'd':
             decipheredText = DecipherVigenere(keyword, cipheredText)
             writeStringToFile(decipheredFilePath, decipheredText)
-            print(decipheredText)
+            # print(decipheredText)
             break
         print('You pressed wrong key. Try again.')
