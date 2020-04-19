@@ -1,45 +1,36 @@
 from math import sqrt
 
-
-def isPrimeNumber(number):
-    squaredRoot = int(sqrt(number))
-
-    for potentialDivisor in range(1,squaredRoot + 1):
-        if number % potentialDivisor == 0:
-            return 0
-    return 1
+# Title: 'Finding all Prime Numbers in a specified range' in Python
+# Author: Michał Kotecki
+# Date: 3/19/2020
 
 
 def FindAllPrimeNumbersInRange(rangeStart, rangeEnd):
 
-    searchRange = list(range(rangeStart, rangeEnd + 1))
+    primes = list(range(2, int(sqrt(rangeEnd)) + 1))
 
-    for number in searchRange:
-        if not isPrimeNumber(number):
-            # searchRange.remove(number)
-        #     pass
-        # else:
-            for subnumber in range(number * 2, rangeEnd+1, number):
-                if subnumber % number == 0 and subnumber in searchRange:
-                    searchRange.remove(subnumber)
+    for prime in primes:
+        number = prime * 2
+        while number in primes:
+            primes.remove(number)
+            number += prime
 
-    print(searchRange)
-    return  searchRange
+    num = rangeEnd - rangeStart + 1
+
+    for number in range(rangeStart, rangeEnd + 1):
+        for prime in primes:
+            if number % prime == 0:
+                num -= 1
+                break
+    return  num
 
 
 if __name__ == '__main__':
 
-    rangeStart = 2
-    rangeEnd = 8_000_000
-
-    NumOfPrimeNumsFrom2To8_000_000 = FindAllPrimeNumbersInRange(rangeStart, rangeEnd).__len__()
-
+    rangeStart = 8_000_000
     rangeEnd = 9_000_000
-    NumOfPrimeNumsFrom2To9_000_000 = FindAllPrimeNumbersInRange(rangeStart, rangeEnd).__len__()
 
-    NumOfPrimeNumsInGivenRange = NumOfPrimeNumsFrom2To9_000_000 - NumOfPrimeNumsFrom2To8_000_000
-    print("There is ", NumOfPrimeNumsInGivenRange, "in the range starting at ", rangeStart, " and ending at ", rangeEnd, "."  )
+    NumOfPrimes = FindAllPrimeNumbersInRange(rangeStart, rangeEnd)
+    print("There are", NumOfPrimes, "prime numbers in the range starting at", rangeStart, "and ending at", rangeEnd)
 
-    # Kotecki Michał: 8_000_000     9_000_000
-    
-    
+    # The result for range (8_000_000, 9_000_000) is 62712.
