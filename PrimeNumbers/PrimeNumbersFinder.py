@@ -19,7 +19,7 @@ def FindAllPrimeNumbersInRange(rangeStart, rangeEnd):
             # searchRange.remove(number)
         #     pass
         # else:
-            for subnumber in range(number * 2, rangeEnd+1):
+            for subnumber in range(number * 2, rangeEnd+1, number):
                 if subnumber % number == 0 and subnumber in searchRange:
                     searchRange.remove(subnumber)
 
