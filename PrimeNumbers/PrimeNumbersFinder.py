@@ -2,7 +2,7 @@ from math import sqrt
 
 # Title: 'Finding all Prime Numbers in a specified range' in Python
 # Author: Michał Kotecki
-# Date: 3/19/2020
+# Date: 4/19/2020
 
 
 def FindAllPrimeNumbersInRange(rangeStart, rangeEnd):
