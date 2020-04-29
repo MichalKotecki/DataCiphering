@@ -1,3 +1,5 @@
+from math import sqrt
+
 # Title: Diffie-Helman Key Exchange in Python
 # Author: Michał Kotecki
 # Date: 4/29/2020
@@ -49,9 +51,45 @@ def Diffie_Helman_DEMO():
     print("B_key", B_key)
 
 
-def SmartModulo(number, power, modulo):
-    pass
+# Function smartModulo is a significantly faster way of calculating: pow(number, power) % modulo
+def smartModulo(number, power, modulo):
+    result = number % modulo
+    current_exponent = 1
 
+    while(current_exponent != power):
+        result = ((result % modulo) * (number % modulo) % modulo)
+        current_exponent += 1
+
+    return result
+
+def isPrimeNumber(number):
+    squaredRoot = int(sqrt(number))
+    for potentialDivisor in range(2,squaredRoot + 1):
+        if number % potentialDivisor == 0:
+            return 0
+    return 1
+
+def clientDiffie_Helman():
+    print("Please enter a prime number: ")
+    p = int(input())
+    while not isPrimeNumber(p):
+        print(p, "is NOT a prime number. Try again.")
+        print("Please enter a prime number: ")
+        p = int(input(p))
+
+    print("Please enter any number: ")
+    g = int(input())
+
+    print("Please enter your SECRET NUMBER: ")
+    secret_number = int(input())
+    number_to_send = smartModulo(g, secret_number, p)
+    print("This number will be send to the other client: ", number_to_send)
+
+    print("Please enter the number you received from the other client:")
+    received_number = int(input())
+    key = pow(received_number, secret_number, p)
+    print("Your key is:", key)
 
 if __name__ == '__main__':
+    clientDiffie_Helman()
 
