@@ -33,7 +33,7 @@ def Lucas_Lehmer_primality_test(primeNumber):
 
 if __name__ == '__main__':
 
-    lambdaAnswer = lambda isPrime: "pierwsza" if isPrime else "złożona"
+    lambdaAnswer = lambda isPrime: "Prime Number" if isPrime else "Composite Number"
     primeNumbersList = getAllPrimeNumbersInRange(32)
     primeNumbersList.remove(2)
     for i, primeNumber in enumerate(primeNumbersList):

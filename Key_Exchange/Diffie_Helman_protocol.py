@@ -1,0 +1,57 @@
+# Title: Diffie-Helman Key Exchange in Python
+# Author: Michał Kotecki
+# Date: 4/29/2020
+# Description:
+# In the case, where two people want to send ciphered messages to one another, they both need to have the same key in order to cipher or decipher messages.
+# One of the ways to achieve this is Diffie-Helman.
+# Diffie-Helman is good, because the information they share as public is not enough to decipher messages.
+# Modulo operation makes it very difficult to guess, what are the secret keys.
+# Huge vulnerability: somebody can act as a middle-man between both sides of the communication.
+# That person just establish his own secret key and act as thought, he is supposted to receive those messages.
+# Than he decipher them and ciphers them again with his secret key and sends them to the proper receiver.
+# Nobody can tell anything is wrong and Diffie-Helman does bot provide any way to deal with this problem.
+
+def Diffie_Helman_DEMO():
+    # Numbers p and g are not secret. They can be public.
+    p = 11  # p must be a prime number
+    g = 4  # g can be any number
+
+    # Number a_secret is secret, only one person in two-side communication knows it and NEVER shares it with anybody.
+    # a_secret can be any number.
+    a_secret = 8
+
+    # Number is b_secret is only known by the other person.
+    # b_secret can be any number.
+    b_secret = 17
+
+    # A_send will be send from owner of a_secret to the owner of b_secret.
+    # B_send will be send from owner of b_secret to the owner of a_secret.
+    A_send = pow(g, a_secret) % p
+    B_send = pow(g, b_secret) % p
+
+    # When both sides of the communication receive number A_send and B_send,
+    # Both sides calculate their keys.
+    A_key = pow(B_send, a_secret) % p
+    B_key = pow(A_send, b_secret) % p
+
+    # A_key should be equal B_key.
+
+    print("p: ", p)
+    print("g: ", g)
+
+    print("a_secret: ", a_secret)
+    print("b_secret: ", b_secret)
+
+    print("A_send", A_send)
+    print("B_send", B_send)
+
+    print("A_key", A_key)
+    print("B_key", B_key)
+
+
+def SmartModulo(number, power, modulo):
+    pass
+
+
+if __name__ == '__main__':
+
