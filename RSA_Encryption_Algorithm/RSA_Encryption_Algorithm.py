@@ -17,7 +17,7 @@
 # 3. Euler's Phi Function
 # 4. Euler's Theorem
 
-
+import secrets
 from ModularInverse import ModularInverse
 from Key_Exchange import Diffie_Helman_Key_Exchange
 
@@ -29,7 +29,7 @@ def GCD(a, b):
 
 # Euler's totient function / Phi function.
 #
-def phiFunction(num):
+def phi(num):
     result = num
     p = 2
 
@@ -57,7 +57,25 @@ def RSA():
 #  2. Calculate p * q
     n = p * q
 #   3. Calculate Euler's totient function / Phi function.
-
+    # phi(n) = (p-1) * (q-1)
+    print("phi(n)" ,phi(n))
+    print("(p-1) * (q-1)", (p-1) * (q-1))
+#   4. Find e. e needs to satisfy 2 conditions:
+#                   *   1 < e < phi(n)
+#                   *   GCD(e, phi(n)) = 1
+#   To find e we pick some number from the given range.
+#   We try to find d, such that (e * d) mod phi(n) = 1. This is Modular Inverse algorithm.
+#   If d exists, the number e is okay. If the number is not okay, we pick different e and try again.
+#   My implementation of Modular Inverse algorithm returns -1, if solution does not exist.
+    d = 5
+    e = 0
+    while True:
+        e = secrets.choice(range(1, phi(n)))
+        if ModularInverse.modularInverse(e, d) > 0:
+            break
+    
 
 if __name__ == '__main__':
-    print(phiFunction(766420))
+    for i in range(100):
+        print()
+    RSA()
