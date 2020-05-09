@@ -8,6 +8,7 @@ from math import sqrt
 # One of the ways to achieve this is Diffie-Helman.
 # Diffie-Helman is good, because the information they share as public is not enough to decipher messages.
 # Modulo operation makes it very difficult to guess, what are the secret keys.
+# Modulo function is kind of a 'Trap Door' function, because it is easy to do and hard to undo.
 # Huge vulnerability: somebody can act as a middle-man between both sides of the communication.
 # That person just establish his own secret key and act as thought, he is supposted to receive those messages.
 # Than he decipher them and ciphers them again with his secret key and sends them to the proper receiver.

@@ -3,6 +3,7 @@
 # Date: 5/09/2020
 # Description:
 # This algorithm is used to find S in (a * S) mod b = 1, given that a and b are known.
+# This kind of problem is called 'Prime Factorization'.
 
 class TableRow:
     def __init__(self, q, r, s):
