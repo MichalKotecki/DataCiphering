@@ -11,7 +11,7 @@ from math import sqrt
 # Huge vulnerability: somebody can act as a middle-man between both sides of the communication.
 # That person just establish his own secret key and act as thought, he is supposted to receive those messages.
 # Than he decipher them and ciphers them again with his secret key and sends them to the proper receiver.
-# Nobody can tell anything is wrong and Diffie-Helman does bot provide any way to deal with this problem.
+# Nobody can tell anything is wrong and Diffie-Helman does not provide any way to deal with this problem.
 
 def Diffie_Helman_DEMO():
     # Numbers p and g are not secret. They can be public.
