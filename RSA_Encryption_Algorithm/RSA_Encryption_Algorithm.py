@@ -9,13 +9,12 @@
 #
 # Concept:
 # This is an asymetric algorithm.
-# Everybody owns two keys: a private key and a public key.
 #
 # RSA uses:
 # 1. Diffie-Helman Key Exchange
 # 2. Modular Inverse algorithm
 # 3. Euler's Phi Function
-# 4. Euler's Theorem
+
 
 import secrets
 from ModularInverse import ModularInverse
@@ -27,8 +26,9 @@ def GCD(a, b):
         return b
     return GCD(b % a, a)
 
+
 # Euler's totient function / Phi function.
-#
+# If n is equivalent to n = p * q (where p ang q are prime numbers), than phi(N) = (p - 1) * (q - 1)
 def phi(num):
     result = num
     p = 2
@@ -50,16 +50,19 @@ def phi(num):
 
 
 
-def RSA():
+def RSA_Encryption(p, q, numberToEncrypt):
 #  1. Choose p and q. Both of them must be prime numbers.
-    p = 3
-    q = 11
 #  2. Calculate p * q
     n = p * q
+    if numberToEncrypt > n-1:
+        print("ERROR. You can not encrypt this, because your prime numbers are too small. Please choose bigger prime numbers.")
+
 #   3. Calculate Euler's totient function / Phi function.
     # phi(n) = (p-1) * (q-1)
-    print("phi(n)" ,phi(n))
-    print("(p-1) * (q-1)", (p-1) * (q-1))
+
+    # print("phi(n)" ,phi(n))
+    # print("(p-1) * (q-1)", (p-1) * (q-1))
+
 #   4. Find e. e needs to satisfy 2 conditions:
 #                   *   1 < e < phi(n)
 #                   *   GCD(e, phi(n)) = 1
@@ -68,40 +71,50 @@ def RSA():
 #   If d exists, the number e is okay. If the number is not okay, we pick different e and try again.
 #   My implementation of Modular Inverse algorithm returns -1, if solution does not exist.
     d = -1
-    e = 7
+    e = 0
     while True:
-        # e = secrets.choice(range(1, phi(n)))
+        e = secrets.choice(range(1, phi(n)))
         d = ModularInverse.modularInverse(e, phi(n))
         if d > 0:
             break
-#   6. We determine the number c by calculating c = (m^e) mod n
-#      m is the number to be encrypted.
-    m = 2
-    c = Diffie_Helman_Key_Exchange.smartModulo(m, e, n)
-    print("Encrypted number:", c)
-#   7. Decryption:
-    m = Diffie_Helman_Key_Exchange.smartModulo(c, d, n)
-    print("Decrypted number:", m)
+#   6. We determine the number c by calculating c = (numberToEncrypt^e) mod n
+    print("Number before encryption: ", numberToEncrypt)
+    encryptedNumber = Diffie_Helman_Key_Exchange.smartModulo(numberToEncrypt, e, n)
+    print("Encrypted number:", encryptedNumber)
+    return (encryptedNumber, d)
 
 
-def splitTextIntoPiecesOfLength_N(text, lengthOfSinglePiece):
+
+def RSA_Decryption(p, q, d, numberToDecrypt):
+    n = p * q
+#   Only the last few lines are different between RSA Encryption and Decryption.
+    decryptedNumber = Diffie_Helman_Key_Exchange.smartModulo(numberToDecrypt, d, n)
+    print("Decrypted number:", decryptedNumber)
+    return decryptedNumber
+
+
+
+
+def splitTextIntoBlocksOfLength_N(text, lengthOfSingleBlock):
     arrayOfSplitted = []
 
-    for i in range(0, len(text), lengthOfSinglePiece):
-        arrayOfSplitted.append(text[i: i + lengthOfSinglePiece])
+    for i in range(0, len(text), lengthOfSingleBlock):
+        arrayOfSplitted.append(text[i: i + lengthOfSingleBlock])
 
-    numberOfLackingCharactersInLastPiece = arrayOfSplitted[-1].__len__() < lengthOfSinglePiece
-    if(numberOfLackingCharactersInLastPiece > 0):
-        for i in range(numberOfLackingCharactersInLastPiece):
+    numberOfLackingCharactersInLastBlock = arrayOfSplitted[-1].__len__() < lengthOfSingleBlock
+    if(numberOfLackingCharactersInLastBlock > 0):
+        for i in range(numberOfLackingCharactersInLastBlock):
             arrayOfSplitted[-1] += chr(0)
 
     return arrayOfSplitted
+
 
 def textToBits(text):
     bits = int()
     for i in reversed(range(len(text))):
         bits += ord(text[-i -1]) << (i*8)
     return bits
+
 
 def bitsToText(bits, lenghtOfTextToGet):
     text = ""
@@ -111,18 +124,43 @@ def bitsToText(bits, lenghtOfTextToGet):
 
 if __name__ == '__main__':
 
-    # a = ord('a')
-    # b = ord('b')
-    # # to change it back from ASCII to char: chr(b)
-    # binary = (a << 8) + b
+    # Example prime numbers: 5333, 5557
 
-    listOfSplittedTextPieces = splitTextIntoPiecesOfLength_N("michal_kotecki", 3)
-    for piece in listOfSplittedTextPieces:
-        print(piece)
-        bits = textToBits(piece)
-        print(bits)
-        print(bitsToText(bits,3))
-        print()
+    print("RSA Algorithm")
+    print("")
+    print("Please enter a prime number: ")
+    p = int(input())
+    while not Diffie_Helman_Key_Exchange.isPrimeNumber(p):
+        print(p, "is NOT a prime number. Try again.")
+        print("Please enter a prime number: ")
+        p = int(input(p))
 
-    # print("binary:", binary)
-    # RSA()
+    print("Please enter another prime number: ")
+    q = int(input())
+    while not Diffie_Helman_Key_Exchange.isPrimeNumber(q):
+        print(q, "is NOT a prime number. Try again.")
+        print("Please enter a prime number: ")
+        q = int(input(q))
+
+    print("Please enter text to be encrypted: ")
+    textToEncrypt = input()
+    
+    print("Please enter length of text blocks: ")
+    lengthOfTextBlocks = int(input())
+    
+    
+    listOfSplittedTextBlocks = splitTextIntoBlocksOfLength_N(textToEncrypt, lengthOfTextBlocks)
+    print(listOfSplittedTextBlocks)
+
+    listOfEncryptedTextBlocks = []
+    for block in listOfSplittedTextBlocks:
+        bits = textToBits(block)
+        listOfEncryptedTextBlocks.append(RSA_Encryption(p,q,bits))
+
+    print(listOfEncryptedTextBlocks)
+
+    # TO-DO decryption does not work
+    decryptedText = ""
+    for block_and_e in listOfEncryptedTextBlocks:
+        decryptedText += bitsToText(RSA_Decryption(p, q, block_and_e[1], block_and_e[0]), lengthOfTextBlocks)
+    print(decryptedText)
