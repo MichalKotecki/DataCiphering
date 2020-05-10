@@ -52,8 +52,8 @@ def phi(num):
 
 def RSA():
 #  1. Choose p and q. Both of them must be prime numbers.
-    p = 11
-    q = 17
+    p = 3
+    q = 11
 #  2. Calculate p * q
     n = p * q
 #   3. Calculate Euler's totient function / Phi function.
@@ -67,15 +67,62 @@ def RSA():
 #   We try to find d, such that (e * d) mod phi(n) = 1. This is Modular Inverse algorithm.
 #   If d exists, the number e is okay. If the number is not okay, we pick different e and try again.
 #   My implementation of Modular Inverse algorithm returns -1, if solution does not exist.
-    d = 5
-    e = 0
+    d = -1
+    e = 7
     while True:
-        e = secrets.choice(range(1, phi(n)))
-        if ModularInverse.modularInverse(e, d) > 0:
+        # e = secrets.choice(range(1, phi(n)))
+        d = ModularInverse.modularInverse(e, phi(n))
+        if d > 0:
             break
-    
+#   6. We determine the number c by calculating c = (m^e) mod n
+#      m is the number to be encrypted.
+    m = 2
+    c = Diffie_Helman_Key_Exchange.smartModulo(m, e, n)
+    print("Encrypted number:", c)
+#   7. Decryption:
+    m = Diffie_Helman_Key_Exchange.smartModulo(c, d, n)
+    print("Decrypted number:", m)
+
+
+def splitTextIntoPiecesOfLength_N(text, lengthOfSinglePiece):
+    arrayOfSplitted = []
+
+    for i in range(0, len(text), lengthOfSinglePiece):
+        arrayOfSplitted.append(text[i: i + lengthOfSinglePiece])
+
+    numberOfLackingCharactersInLastPiece = arrayOfSplitted[-1].__len__() < lengthOfSinglePiece
+    if(numberOfLackingCharactersInLastPiece > 0):
+        for i in range(numberOfLackingCharactersInLastPiece):
+            arrayOfSplitted[-1] += chr(0)
+
+    return arrayOfSplitted
+
+def textToBits(text):
+    bits = int()
+    for i in reversed(range(len(text))):
+        bits += ord(text[-i -1]) << (i*8)
+    return bits
+
+def bitsToText(bits, lenghtOfTextToGet):
+    text = ""
+    for i in reversed(range(0, lenghtOfTextToGet)):
+        text += chr(int(bits / pow(2, 8 * i)) % pow(2,8))
+    return text
 
 if __name__ == '__main__':
-    for i in range(100):
+
+    # a = ord('a')
+    # b = ord('b')
+    # # to change it back from ASCII to char: chr(b)
+    # binary = (a << 8) + b
+
+    listOfSplittedTextPieces = splitTextIntoPiecesOfLength_N("michal_kotecki", 3)
+    for piece in listOfSplittedTextPieces:
+        print(piece)
+        bits = textToBits(piece)
+        print(bits)
+        print(bitsToText(bits,3))
         print()
-    RSA()
+
+    # print("binary:", binary)
+    # RSA()
