@@ -125,6 +125,7 @@ if __name__ == '__main__':
             if privateKey > 0:
                 break
 
+        print("phi:", phi(p, q))
         print("e:", e)
         print("d:", privateKey)
 
@@ -137,7 +138,7 @@ if __name__ == '__main__':
 
         asciList = list(map(lambda block: list(map(lambda character: ord(character), block)), listOfSplitTextBlocks))
         print("Plain text version of blocks:", listOfSplitTextBlocks)
-        print("ASCI version of text blocks", asciList)
+        print("ASCI version of text blocks:", asciList)
         bitBlocksList = [] # this is only for printing purpose
 
 
