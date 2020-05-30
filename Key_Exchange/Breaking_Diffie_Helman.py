@@ -5,12 +5,14 @@
 # Breaking Diffie-Helman means finding tge exponent_X in the equation: (base^exponent_X) % modulo = someNumber
 # given that all the other number (base, modulo, someNumber) are known.
 #
+# Side note: this is related to problem of solving a Discrete Logarithm.
+#
 # There are 2 approaches to this problem:
 # 1. Naive approach
 # This approach means trying to put every number as exponent_X in the equation and checking if it satisfies the equation.
 # The naive approach takes incredible amount of time to find the result, so it does not get applied in the real life scenerios.
 #
-# 2. Baby Step - Giant Step
+# 2. Baby Step - Giant Step Algorithm
 # For this algorithm the basic equation:
 # (base^exponent_X) % modulo = someNumber
 # must be transformed into different, equivalent equation:
