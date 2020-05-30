@@ -52,14 +52,29 @@ def Diffie_Helman_DEMO():
     print("B_key", B_key)
 
 
+# # Function smartModulo is a significantly faster way of calculating: pow(number, power) % modulo
+# def smartModulo(number, power, modulo):
+#     result = number % modulo
+#     current_exponent = 1
+#
+#     while(current_exponent != power):
+#         result = ((result % modulo) * (number % modulo) % modulo)
+#         current_exponent += 1
+#
+#     return result
+
+
 # Function smartModulo is a significantly faster way of calculating: pow(number, power) % modulo
 def smartModulo(number, power, modulo):
-    result = number % modulo
-    current_exponent = 1
+    result = 1
+    current_exponent = number % modulo
+    step = 1
 
-    while(current_exponent != power):
-        result = ((result % modulo) * (number % modulo) % modulo)
-        current_exponent += 1
+    for i in range(1, power + 1, step):
+        step = step << 1
+        if i == power:
+            result = (result * current_exponent) % modulo
+        current_exponent = (current_exponent * current_exponent) % modulo
 
     return result
 
