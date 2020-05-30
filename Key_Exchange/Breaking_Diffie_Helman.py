@@ -70,7 +70,8 @@
 # We do: rightIndex = ( rightResult ) % primeNumber
 # If any number at the list at HashTable[rightIndex] equals to rightResult, than we can stop.
 # We found correct 'i' and 'j'.
-import datetime
+
+
 from math import sqrt, ceil
 import time
 from Key_Exchange.Diffie_Helman_Key_Exchange import smartModulo
@@ -83,7 +84,7 @@ def findPrimeNumberCloseToNumber(number):
     if number <= 0:
         return 2
 
-    j = 0
+    j = 1
     while True:
         for i in range(number - (100 * j-100), number - (100 * j), -1):
             if isPrimeNumber(i) == 1:
@@ -93,7 +94,7 @@ def findPrimeNumberCloseToNumber(number):
 
 def BreakingDiffieHelman(base, modulo, someNumber):
 
-    sqrtOfModulo = int(sqrt(modulo))
+    sqrtOfModulo = int(ceil(sqrt(modulo)))
     primeNumber = findPrimeNumberCloseToNumber(sqrtOfModulo)
     hashTable = [None] * primeNumber
 
@@ -108,10 +109,11 @@ def BreakingDiffieHelman(base, modulo, someNumber):
 
 
     # Right side of the equation
+    speedUpHack = someNumber
     baseReplacement = modularInverse(base, modulo)
-    powOfBaseReplacementAndSqrtOfModulo = pow(baseReplacement,sqrtOfModulo)
+    powOfBaseReplacementAndSqrtOfModulo = smartModulo(baseReplacement, sqrtOfModulo, modulo)
     for i in range(sqrtOfModulo):
-        rightResult = (someNumber * pow(powOfBaseReplacementAndSqrtOfModulo,i)) % modulo # TODO
+        rightResult = speedUpHack % modulo
         rightIndex = rightResult % primeNumber
         if hashTable[rightIndex] is not None:
             for leftResultAndJ in hashTable[rightIndex]:
@@ -120,6 +122,7 @@ def BreakingDiffieHelman(base, modulo, someNumber):
                     # Calculating exponent_X
                     # print("FOUND answer is j = ", leftResultAndJ[1], "i =", i)
                     return (i * sqrtOfModulo) + leftResultAndJ[1]
+        speedUpHack = (speedUpHack % modulo) * powOfBaseReplacementAndSqrtOfModulo
 
     return -1
 
@@ -128,10 +131,10 @@ if __name__ == '__main__':
 
     print("Breaking Diffie-Helman Key Exchange Protocol\n\n")
 
-    timeMeasureStart = datetime.datetime.now()
+    timeMeasureStart = int(round(time.time() * 1000))
     checkForError = lambda number: f"Result: {number}." if number != -1 else "No solution for those numbers."
     # print(checkForError(BreakingDiffieHelman(3, 17, 2)))
     print(checkForError(BreakingDiffieHelman(1294953865, 1569834481, 1344305451)))
-    timeMeasureEnd = datetime.datetime.now()
+    timeMeasureEnd = int(round(time.time() * 1000))
 
-    print("The calculations took ", (timeMeasureEnd - timeMeasureStart).total_seconds() * 1000_000, "microseconds.")
+    print("The calculations took", (timeMeasureEnd - timeMeasureStart), "miliseconds.")
