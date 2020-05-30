@@ -4,9 +4,13 @@ from math import sqrt
 # Author: Michał Kotecki
 # Date: 4/26/2020
 
+# Function returns 1, if a number is prime. Otherwise, function returns 0.
 def isPrimeNumber(number):
+    if number % 2 == 0:
+        return 0
+
     squaredRoot = int(sqrt(number))
-    for potentialDivisor in range(1,squaredRoot + 1):
+    for potentialDivisor in range(3, squaredRoot + 1, 2):
         if number % potentialDivisor == 0:
             return 0
     return 1

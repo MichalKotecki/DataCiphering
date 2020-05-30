@@ -4,8 +4,12 @@
 # Description:
 # Breaking Diffie-Helman means finding tge exponent_X in the equation: (base^exponent_X) % modulo = someNumber
 # given that all the other number (base, modulo, someNumber) are known.
+# 'exponent_X' is somebody's secret / private key.
+# 'base' is public. It can be any number.
+# 'modulo' is public. It must be a prime number.
+# 'someNumber' is a number sent to a message receiver. It can be captured by somebody, but it is not enough to encode message without the secret / private key.
 #
-# Side note: this is related to problem of solving a Discrete Logarithm.
+# Side note: this is related to the problem of solving a 'Discrete Logarithm'.
 #
 # There are 2 approaches to this problem:
 # 1. Naive approach
@@ -32,7 +36,7 @@
 # exponent_X = (i * sqrt( modulo )) + j
 #
 #
-# The Algorithm itself goes like this:
+# The algorithm itself goes like this:
 # STEP 1
 # First we calculate the left side of the equation for every 'j' in range (0, sqrt(modulo) - 1).
 # Left side: (base^j) % modulo
@@ -66,29 +70,68 @@
 # We do: rightIndex = ( rightResult ) % primeNumber
 # If any number at the list at HashTable[rightIndex] equals to rightResult, than we can stop.
 # We found correct 'i' and 'j'.
-
-
-
-from math import sqrt, ceil
 import datetime
+from math import sqrt, ceil
+import time
 from Key_Exchange.Diffie_Helman_Key_Exchange import smartModulo
+from PrimeNumbers.Lucas_Lehmer_primality_test import isPrimeNumber
 from ModularInverse.ModularInverse import modularInverse
 
 
+# Function finds the first prime number in range (0, number + 100) starting from the end of this range.
+def findPrimeNumberCloseToNumber(number):
+    if number <= 0:
+        return 2
+
+    j = 0
+    while True:
+        for i in range(number - (100 * j-100), number - (100 * j), -1):
+            if isPrimeNumber(i) == 1:
+                return i
+        j += 1
+    return None
+
+def BreakingDiffieHelman(base, modulo, someNumber):
+
+    sqrtOfModulo = int(sqrt(modulo))
+    primeNumber = findPrimeNumberCloseToNumber(sqrtOfModulo)
+    hashTable = [None] * primeNumber
+
+    # Left side of the equation
+    for j in range(sqrtOfModulo):
+        leftResult = smartModulo(base, j, modulo)
+        leftIndex = leftResult % primeNumber
+
+        if hashTable[leftIndex] is None:
+            hashTable[leftIndex] = []
+        hashTable[leftIndex].append((leftResult, j))
 
 
-def BreakingDiffieHelman(number, modulo, d):
+    # Right side of the equation
+    baseReplacement = modularInverse(base, modulo)
+    powOfBaseReplacementAndSqrtOfModulo = pow(baseReplacement,sqrtOfModulo)
+    for i in range(sqrtOfModulo):
+        rightResult = (someNumber * pow(powOfBaseReplacementAndSqrtOfModulo,i)) % modulo # TODO
+        rightIndex = rightResult % primeNumber
+        if hashTable[rightIndex] is not None:
+            for leftResultAndJ in hashTable[rightIndex]:
+                if leftResultAndJ[0] == rightResult:
+                    # FOUND i and j.
+                    # Calculating exponent_X
+                    # print("FOUND answer is j = ", leftResultAndJ[1], "i =", i)
+                    return (i * sqrtOfModulo) + leftResultAndJ[1]
 
     return -1
 
 
 if __name__ == '__main__':
 
-    print("Breaking Diffie-Helman Key Exchange Protocol")
+    print("Breaking Diffie-Helman Key Exchange Protocol\n\n")
 
     timeMeasureStart = datetime.datetime.now()
-    # BreakingDiffieHelman(3, 17)
-    print(BreakingDiffieHelman(1294953865, 1569834481, 1344305451))
+    checkForError = lambda number: f"Result: {number}." if number != -1 else "No solution for those numbers."
+    # print(checkForError(BreakingDiffieHelman(3, 17, 2)))
+    print(checkForError(BreakingDiffieHelman(1294953865, 1569834481, 1344305451)))
     timeMeasureEnd = datetime.datetime.now()
 
     print("The calculations took ", (timeMeasureEnd - timeMeasureStart).total_seconds() * 1000_000, "microseconds.")
